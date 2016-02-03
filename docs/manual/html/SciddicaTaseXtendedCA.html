@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="SciddicaTwithactivecellsoptimization.html">
+<LINK REL="Next" HREF="SciddicaTwithexplicitsimulationloop.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaTwithactivecellsoptimization.html">Previous</A>
+<A HREF="SciddicaTwithexplicitsimulationloop.html">Next</A>
+<HR NOSHADE>
+<H2 id="sec:sciddicaT_extended"><A NAME="6_6">SciddicaT as eXtended CA</A>
+</H2>
+<P>OpenCAL allows for further optimization of the SciddicaT debris flows
+ simulation model by means of the so called<EM> unsafe operations</EM>.
+ In fact, in some cases, it is possible to consider an extended
+ definition of the computational model, allowing for operations that are
+ not strictly permitted by the formal definition of Cellular Automata.
+ In particular, we will allow the transition function to update the
+ state of the neighbouring cells, while the CA only allows for state
+ change for the central one. When we will permit such a kind of unsafe
+ operations, we are in front of an XCA eXtended Cellular Automata.
+ Obviously, in order to be well defined, the XCA must be equivalent to
+ the original CA model.</P>
+<P>An XCA equivalent version of SciddicaT can be obtained by obseving
+ that, when an outflow is computed from the central cell towards a
+ neighbour, the flow can be immediatly subtracted from the central cell
+ and added to the neighbour. This does not change the state of the
+ system at the current step, which is defined by the<EM> current</EM>
+ computational plane, since updated values are written to the<EM> next</EM>
+ computational plane. As a result, the<EM> current</EM> computational
+ plane is not corrupted by the extended operation, and the<EM> next</EM>
+ plane is used for progressively accounting mass variation inside the
+ cells. By introducing such feature, ouflows don’t need to be saved
+ (e.g. into additional substates) anymore, as they are used to account
+ mass exchange directly during ouflows computation. As you can figure
+ out, this can give rise to a further performace improvement for the
+ application. The SciddicaT XCA model is formally defined as:</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[SciddicaT = &lt; R, A, X, Q , P, \sigma &gt;\]</P>
+<P>where:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(R\) is the set of points, with integer coordinates, which defines the
+ 2-dimensional cellular space over which the phenomenon evolves. The
+ generic cell in
+<!--span class=&quot;math inline&quot;-->
+ \(R\) is individuated by means of a couple of integer coordinates
+<!--span class=&quot;math inline&quot;-->
+ \((i, j)\), where
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq i &lt; i_{max}\) and
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq j &lt; j_{max}\). The firt coordinate,
+<!--span class=&quot;math inline&quot;-->
+ \(i\), represents the row, while the second,
+<!--span class=&quot;math inline&quot;-->
+ \(j\), the column. The cell at coodinates
+<!--span class=&quot;math inline&quot;-->
+ \((0,0)\) is located at the top-left corner of the computational grid.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(A \subseteq R\) is the set of active cells, i.e. those cells actually
+ involved in computation.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(X = \{(0,0), (-1, 0), (0, -1), (0, 1), (1, 0)\}\) is the von Neumann
+ neighborhood relation (cf. Figure [fig:2Dneighborhood]), a geometrical
+ pattern which identifies the cells influencing the state transition of
+ the central cell. The neighborhood of the generic cell of coordinate
+<!--span class=&quot;math inline&quot;-->
+ \((i, j)\) is given by
+<!--span class=&quot;math display&quot;-->
+ \[N(X, (i, j)) =\]
+<!--span class=&quot;math display&quot;-->
+ \[= \{(i, j)+(0,0), (i, j)+(-1, 0), (i, j)+(0, -1), (i, j)+(0, 1), (i,
+ j)+(1, 0)\} =\]
+<!--span class=&quot;math display&quot;-->
+ \[= \{(i, j), (i-1, j), (i, j-1), (i, j+1), (i+1, j)\}\]</P>
+<P>Here, a subscript operator can be used to index cells belonging to
+ the neighbourhood. Let
+<!--span class=&quot;math inline&quot;-->
+ \(|X|\) be the number of elements in X, and
+<!--span class=&quot;math inline&quot;-->
+ \(n \in \mathbb{N}\),
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq n &lt; |X|\); the notation</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[N(X, (i, j), n)\]</P>
+<P>represents the
+<!--span class=&quot;math inline&quot;-->
+ \(n^{th}\) neighbourhood of the cell
+<!--span class=&quot;math inline&quot;-->
+ \((i,j)\). Thereby,
+<!--span class=&quot;math inline&quot;-->
+ \(N(X, (i, j), 0) = (i, j)\), i.e. the central cell,
+<!--span class=&quot;math inline&quot;-->
+ \(N(X, (i, j), 1) = (i-1, j)\), i.e. the first neighbour, and so on
+ (cf. Figure [fig:LifeNeighborhood]).</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q\) is the set of cell states; it is subdivided in the following
+ substates:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q_z\) is the set of values representing the topographic altitude (i.e.
+ elevation);</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q_h\) is the set of values representing the debris thickness;</P>
+</LI>
+</UL>
+<P>The Cartesian product of the substates defines the overall set of
+ state
+<!--span class=&quot;math inline&quot;-->
+ \(Q\):</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[Q = Q_z \times Q_h\] so that the cell state is specified by:</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[q = (q_z, q_h)\]</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(P\) is set of parameters ruling the CA dynamics:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(p_\epsilon\) is the parameter which specifies the thickness of the
+ debris that cannot leave the cell due to the effect of adherence;</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(p_r\) is the relaxation rate parameter, which affects the size of
+ outflows (cf. section above).</P>
+</LI>
+</UL>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma : A \times Q^5 \shortrightarrow Q\) is the deterministic cell
+ transition function. It is composed by two elementary processes:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_1 : A \times (Q_z \times Q_h)^5 \times p_\epsilon \times
+ p_r\shortrightarrow (A \times Q_h)^5\) determines the outflows from the
+ central cell to the neighboring ones and updates debris thickness
+ inside the central cell and its neighbours accordingly. It also adds
+ the neighbouring cells receining a flow to the set A of the active
+ cells.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_2: A \times Q_h \times p_\epsilon \shortrightarrow A\) removes
+ the cell from the set A of the active cells if the debris thickness
+ inside the cell is lower than or equal to the
+<!--span class=&quot;math inline&quot;-->
+ \(p_\epsilon\) threshold.</P>
+</LI>
+</UL>
+</LI>
+</UL>
+<P>Note that, only the topographic altitude and the debris thickness are
+ now considered as model’s substates, as the four outflows substates
+ are no longer needed. Moreover, the number of elementary process now
+ considered is two, instead of three for the previous versions of
+ SciddicaT. The OpenCAL implementation of the further optimized
+ SciddicaT debris flows model is shown in Listing
+ [lst:cal_sciddicaT-unsafe].</P>
+<P>As you can see, the definitions of CA and simulation objects
+ doesn’t change from the previous implementation (lines 131-132),
+ while only two elementary processes are considered (lines 135-136). In
+ particular, the firt call to <CODE>calAddElementaryProcess2D()</CODE>
+ registers the callbak function implementing the
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_1\) elementary process. It computes outflows from the (active)
+ central cell to its neighbours (line 83) and updates the debris
+ tickness in both the central cell and the neighbouring cell receiving a
+ flow (lines 84-85). Moreover, neighbouring cells receiving a flow are
+ added to the set A of active cells (line 88) and therefore will be
+ considered for elaboration by the subsuequent elementary process (
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_2\)) in the current step of computation<A class="footnoteRef" href="#fn11"
+id="fnref11"><SUP>11</SUP></A>. In particular, the <CODE>calSetX2Dr()</CODE><EM>
+ unsafe</EM> function is used to update the derbis thickess of the
+ neighbouring cells receiving a flow, while the <CODE>
+calAddActiveCellX2D()</CODE> function is used to add a neighbouring
+ cells receiving a flow to the set
+<!--span class=&quot;math inline&quot;-->
+ \(A\) of active cells. The
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_2\) elementary process, simply removes inactive cells from
+<!--span class=&quot;math inline&quot;-->
+ \(A\) (lines 95-86), as in the previous example.</P>
+<P>Substates are added to the CA at lines 139-140. Here, the first
+ substate,
+<!--span class=&quot;math inline&quot;-->
+ \(Q_z\), is added by menas of the <CODE>calAddSingleLayerSubstate2Dr()</CODE>
+ function. It is here considered to allocate memory only for the<EM>
+ current</EM> computing plane. In fact, topographic altitutde only
+ changes at the simulation initialization stage (cf. lines 147 and 117),
+ while it remains inalterated during computation as its value is never
+ updated by the transition function. This allows for memory space
+ allocation optimization and possibly for computational performance
+ improvements. Note that, at line 117 we used the <CODE>
+calSetCurrent2Dr()</CODE> function, instead of the usual <CODE>
+calSet2Dr()</CODE>. The <CODE>calSetCurrent2Dr()</CODE> function allows
+ for updating the<EM> current</EM> computational plane (the only present
+ in the
+<!--span class=&quot;math inline&quot;-->
+ \(Q_z\) substate), while <CODE>calSet2Dr()</CODE> would update the<EM>
+ next</EM> computational plane, by producing an access violation error.</P>
+<P>Regarding the computational preformace, the same simulation shown in
+ Figure [fig:sciddicaT] was executed by considering the XCA
+ implementation of SciddicaT on a single core of the same processor. The
+ simulation lasted a total of 11 seconds, versus 22 seconds obtained for
+ the active cells optimized version and 172 seconds for the basic
+ (non-optimized) version. The XCA implementation resulted 2 times faster
+ than the active cells optimized version and about 16 times faster with
+ than the basic one.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaTwithactivecellsoptimization.html">Previous</A>
+<A HREF="SciddicaTwithexplicitsimulationloop.html">Next</A>
+</BODY>
+</HTML>

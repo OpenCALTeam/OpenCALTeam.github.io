@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="CellularAutomata.html">
+<LINK REL="Next" HREF="FormalDefinitionofCellularAutomata.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="CellularAutomata.html">Previous</A>
+<A HREF="FormalDefinitionofCellularAutomata.html">Next</A>
+<HR NOSHADE>
+<H2 id="sec:CAInformaDef"><A NAME="5_1">Informal Definition of Cellular
+ Automata</A></H2>
+<P>A cellular automaton can be thought as a
+<!--span class=&quot;math inline&quot;-->
+ \(d\)-dimensional space, called<EM> cellular space</EM>, subdivided in
+ regular cells of uniform shape and size. Each cell embeds a<EM> finite
+ automaton</EM>, one of the most simple and well known computational
+ models, which can assume a finite number of states. At time
+<!--span class=&quot;math inline&quot;-->
+ \(t=0\), cells are in arbitrary states and the CA evolves step by step
+ by changing the states of the cells at discrete time steps, by applying
+ the same local rule of evolution, i.e. the cell’s<EM> transition
+ function</EM>, simultaneously (i.e. in parallel) to each cell of the
+ CA. Input for the cell is given by the states of a predefined (small)
+ set of neighboring cells, which is assumed constant in space and time.
+ It is possible to identify an informal definition of cellular automaton
+ by simply listing its main properties:</P>
+<UL>
+<LI>
+<P>It is formed by a
+<!--span class=&quot;math inline&quot;-->
+ \(d\)-dimensional space (i.e. the<EM> cellular space</EM>), partitioned
+ into cells of uniform shape and size (e.g. triangles, squares,
+ hexagons, cubes, etc. - see Figure [fig:cellularspaces]);</P>
+</LI>
+<LI>
+<P>The number of cell’s states is finite;</P>
+</LI>
+<LI>
+<P>The evolution occurs through discrete steps;</P>
+</LI>
+<LI>
+<P>Each cell changes state simultaneously to each other (i.e. they
+ change state concurrently, in parallel) thanks to the application of
+ the cell’s<EM> transition function</EM>;</P>
+</LI>
+<LI>
+<P>The cell’s state transition depends on the states of a set of
+ neighboring cells;</P>
+</LI>
+<LI>
+<P>The evolving cell is called<EM> central cell</EM> and can belong to
+ its neighbourhood;</P>
+</LI>
+<LI>
+<P>The neighboring relationship is local, uniform and invariant over
+ time (see Figures [fig:1Dneighborhood] and [fig:2Dneighborhood] for
+ examples of 1D and 2D neighborhoods, respectively).</P>
+</LI>
+</UL>
+<DIV class="figure"> <IMG alt="Example of cellular spaces: (a) one-dimensional, (b) two-dimensional with square cells, (c) two-dimensional with hexagonal cells, (d) three-dimensional with cubic cells."
+HEIGHT="131" src="cellularspaces.png" width="453">
+<P class="caption">Example of cellular spaces: (a) one-dimensional, (b)
+ two-dimensional with square cells, (c) two-dimensional with hexagonal
+ cells, (d) three-dimensional with cubic cells.
+<!--span data-label=&quot;fig:cellularspaces&quot;-->
+</P>
+</DIV><DIV class="figure"> <IMG alt="Example of neighborood with radius (a) r = 1 and (b) r       = 2 for one-dimensional Cellular Automata. Central cell is represented in dark gray, while adjacent cells are in light gray. Note that the central cell can optionally belong to its own neighborhood."
+HEIGHT="97" src="onedimensional.png" width="453">
+<P class="caption">Example of neighborood with radius (a)
+<!--span class=&quot;math inline&quot;-->
+ \(r = 1\) and (b)
+<!--span class=&quot;math inline&quot;-->
+ \(r = 2\) for one-dimensional Cellular Automata. Central cell is
+ represented in dark gray, while adjacent cells are in light gray. Note
+ that the central cell can optionally belong to its own neighborhood.
+<!--span data-label=&quot;fig:1Dneighborhood&quot;-->
+</P>
+</DIV><DIV class="figure"> <IMG alt="Examples of von Neumann (a) and Moore (b) neighboroods for two-dimensional CA with square cells. Examples of (Moore) neighborhoods are also shows for hexagonal CA, both for the cases of horizontal (c) and vertical (d) cells orientation. Central cell is represented in dark gray, while adjacent cells are in light gray. Note that the central cell can optionally belong to its own neighborhood."
+HEIGHT="128" src="2Dneighborhoods.png" width="453">
+<P class="caption">Examples of von Neumann (a) and Moore (b)
+ neighboroods for two-dimensional CA with square cells. Examples of
+ (Moore) neighborhoods are also shows for hexagonal CA, both for the
+ cases of horizontal (c) and vertical (d) cells orientation. Central
+ cell is represented in dark gray, while adjacent cells are in light
+ gray. Note that the central cell can optionally belong to its own
+ neighborhood.
+<!--span data-label=&quot;fig:2Dneighborhood&quot;-->
+</P>
+</DIV>
+<P>Despite their simple definition, CA can exhibit very interesting
+ complex global behaviors. Moreover, from a computational point of view,
+ they are equivalent to Turing Machines. This means, in principle, that
+ everything that can be computed can also be by means of a cellular
+ automaton (Church–Turing thesis). Thanks to their<EM> computational
+ universality</EM>, CA gained a great consideration inside the
+ Scientific Community and were employed for solving a great variety of
+ different complex problems.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="CellularAutomata.html">Previous</A>
+<A HREF="FormalDefinitionofCellularAutomata.html">Next</A>
+</BODY>
+</HTML>

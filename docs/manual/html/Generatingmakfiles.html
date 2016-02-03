@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="StructureoftheDistributionDirectory.html">
+<LINK REL="Next" HREF="BuildandInstallUninstall.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="StructureoftheDistributionDirectory.html">Previous</A>
+<A HREF="BuildandInstallUninstall.html">Next</A>
+<HR NOSHADE>
+<H3 id="generating-makfiles"><A NAME="4_3_1">Generating makfiles</A></H3>
+<P>Once you have satisfied all necessary dependencies it is time to
+ generate the makefiles (or the project files or for your development
+ environment) needed to build the software distribution. CMake needs to
+ know two paths for this:</P>
+<OL>
+<LI>
+<P>The path to the OpenCAL source tree root directory;</P>
+</LI>
+<LI>
+<P>The target path for the generated files and compiled binaries.</P>
+</LI>
+</OL>
+<P>If these paths are the same, we are in front of an in-tree build,
+ otherwise of an out-of-tree build. We strongly suggest to do an
+ out-of-tree build. One of several advantages of out-of-tree builds is
+ that you can generate files and compile for different development
+ environments using a single source tree.</P>
+<P>To make an out-of-tree build you need to:</P>
+<OL>
+<LI>
+<P>Enter the source tree root directory (e.g. <CODE>&lt;gitwd&gt;/opencal/</CODE>
+);</P>
+</LI>
+<LI>
+<P>Create a directory for the binaries (e.g. <CODE>
+&lt;gitwd&gt;/opencal/build/</CODE>) and enter into it;</P>
+</LI>
+<LI>
+<P>Run CMake using zero or more of the options listed in Table
+ [ch:installation:cmakeoptions] to control which features will be
+ enabled in the compiled library. The current directory is used as
+ target path, while the path provided as an argument is used to find the
+ source tree.</P>
+</LI>
+</OL>
+<P>If you want to build everything (serial and parallel libraries,
+ examples and documentation), you can use the following commands:</P>
+<PRE> <CODE> user@machine:-$ cd &lt;gitwd&gt;/opencal/
+  user@machine:-$ mkdir build &amp;&amp; cd build
+  user@machine:-$ cmake ../ -DBUILD_OPENCAL_SERIAL=ON \
+                            -DBUILD_OPENCAL_OMP=ON \
+                            -DBUILD_OPENCAL_CL=ON \
+                            -DBUILD_OPENCAL_GL=ON \
+                            -DBUILD_EXAMPLES=ON \
+                            -DBUILD_DOCUMENTATION=ON \
+                            -DENABLE_SHARED=ON</CODE></PRE>
+<P>Each CMake option corresponds to a target. If you are not interested
+ to some of them, simply switch off the corresponding option. For
+ instace, if you set the <CODE>ENABLE_SHARED</CODE> option to <CODE>OFF</CODE>
+ (that, indeed, is the default value), generated makefiles will be set
+ to build static libraries (.a files under Linux systems) instead of
+ shared objects (.so files). If you omit a CMake option, the default
+ value will be assumed (cf. Table [ch:installation:cmakeoptions]).</P>
+<P>
+<!--span-->
+lXl<STRONG> OPTION</STRONG> &amp;<STRONG> EFFECT</STRONG> &amp;<STRONG> DEFAULT</STRONG>
+<BR> <CODE>BUILD_OPENCAL_SERIAL</CODE> &amp; Build the OpenCAL serial
+ version &amp; ON
+<BR> <CODE>BUILD_OPENCAL_OMP</CODE> &amp; Build the OpenCAL-OMP OpenMP
+ parallel version (OpenMP required) &amp; OFF
+<BR> <CODE>BUILD_OPENCAL_CL</CODE> &amp; Build the OpenCAL-CL OpenCL
+ parallel version (OpenCL required) &amp;OFF
+<BR> <CODE>BUILD_OPENCAL_GL</CODE> &amp; Build the OpenCAL-GL visualization
+ library (OpenGL and GLUT required) &amp;OFF
+<BR> <CODE>BUILD_EXAMPLES</CODE> &amp; Build the examples for each OpenCAL
+ version &amp;
+<BR> <CODE>BUILD_DOCUMENTATION</CODE> &amp; Build the HTML based API
+ documentation (Doxygen and Graphviz required) &amp; OFF
+<BR> <CODE>ENABLE_SHARED</CODE> &amp; Controls whether the library should be
+ compiles as shared object (.so). If OFF, static objects (.a) will be
+ produced &amp; OFF
+<BR></P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="StructureoftheDistributionDirectory.html">Previous</A>
+<A HREF="BuildandInstallUninstall.html">Next</A>
+</BODY>
+</HTML>

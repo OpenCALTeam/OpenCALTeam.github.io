@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="CombiningOpenCALandOpenCALGL.html">
+<LINK REL="Next" HREF="Implementingthemod2CAinOpenCALandOpenCALGL.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="CombiningOpenCALandOpenCALGL.html">Previous</A>
+<A HREF="Implementingthemod2CAinOpenCALandOpenCALGL.html">Next</A>
+<HR NOSHADE>
+<H3 id="implementing-sciddicat-in-opencal-and-opencal-gl"><A NAME="6_9_1">
+Implementing SciddicaT in OpenCAL and OpenCAL-GL</A></H3>
+<P>A new implementation of SciddicaT is presented in Listing
+ [lst:calgl_sciddicaT], which integrates a simple multi-view 2D and 3D
+ visualization system based on OpenCAL-GL. The complete implementation
+ is shown for the sake of completeness in Listing [lst:calgl_sciddicaT].
+ A screenshot is shown in Figure [fig:calgl_sciddicaT1].</P>
+<DIV class="figure"> <IMG alt="Screenshot of the SciddicaT debris flow model with a multi-view 2D and 3D visualization system based on OpenCAL-GL."
+HEIGHT="342" src="calgl_sciddicaT1.png" width="453">
+<P class="caption">Screenshot of the SciddicaT debris flow model with a
+ multi-view 2D and 3D visualization system based on OpenCAL-GL.
+<!--span data-label=&quot;fig:calgl_sciddicaT1&quot;-->
+</P>
+</DIV>
+<P>As you can see, two visualization objects of type <CODE>
+CALDrawModel2D</CODE> are declared into the <CODE>main()</CODE>
+ function. Each of them allows to define a particular view of the CA
+ inside a graphic windows.</P>
+<P>The <CODE>calglDefDrawModel2D()</CODE> function is used to initialize
+ graphic objcts (it acts as a constructor). The first parameter
+ specifies the type of drawing to be considered and can assume the
+ values listed in Table [tab:draw_modes]. The second parameter
+ represents the title to label the portion of the graphic window
+ containing the view. The third parameter is a pointer to the CA object
+ to be visualized, while the last one is a pounter to the corresponding
+ simulation object.</P>
+<P>To build a specifig view for the CA, we use the <CODE>
+calglAddToDrawModel2Dr()</CODE> function. It adds a node into a tree
+ representation, where each node is linked to a CA substate and
+ specifies how this substate have to be considered for representation.
+ In particular, a susbstate can be used as vertex data, normal data and
+ color data.</P>
+<TABLE><CAPTION> Possible OpenCAL-GL drawing types.
+<!--span data-label=&quot;tab:draw_modes&quot;-->
+</CAPTION><THEAD></THEAD>
+<TR class="header"><TH align="left">Drawing type</TH><TH align="left">
+Meaning</TH></TR>
+<TBODY></TBODY>
+<TR class="odd"><TD align="left"><CODE>CALGL_DRAW_MODE_FLAT</CODE></TD><TD
+align="left">Each cell is interpreted as an element of a matrix</TD></TR>
+<TR class="even"><TD align="left"><CODE>CALGL_DRAW_MODE_SURFACE</CODE></TD><TD
+align="left">Each cell is assumed to belong to a topographic surface</TD>
+</TR>
+</TABLE>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="CombiningOpenCALandOpenCALGL.html">Previous</A>
+<A HREF="Implementingthemod2CAinOpenCALandOpenCALGL.html">Next</A>
+</BODY>
+</HTML>

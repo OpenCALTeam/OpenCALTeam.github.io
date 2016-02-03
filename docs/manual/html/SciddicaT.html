@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="CustomNeighbourhoods.html">
+<LINK REL="Next" HREF="SciddicaTwithactivecellsoptimization.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="CustomNeighbourhoods.html">Previous</A>
+<A HREF="SciddicaTwithactivecellsoptimization.html">Next</A>
+<HR NOSHADE>
+<H2 id="sec:sciddicaT"><A NAME="6_4">SciddicaT</A></H2>
+<P>In the previous section we illustrated an OpenCAL implementation of a
+ simple cellular automaton, namely the Conway’s Game of Life. Here, we
+ will deal with a more complex example concerning the implementations of
+ the SciddicaT Cellular Automata model for landslide simulation.
+ Different versions will be presented, ranging from a naive to a fully
+ optimized implementation.</P>
+<P>Sciddica is a family of two-dimensional XCA (eXtended Cellular
+ Automata - see Chapter [ch:CA]) debris flow models, successfully
+ applied to the simulation of many real cases, such as the 1988 Mt.
+ Ontake (Japan) landslide and the 1998 Sarno (Italy) disaster. An
+ oversimplified toy-version of Sciddica (SciddicaT in the following) was
+ here considered to be implemented in <CODE>OpenCAL</CODE>, and its
+ application to the 1992 Tessina (Italy) landslide shown.</P>
+<P>SciddicaT considers the surface over which the phenomenon evolves as
+ subdivided in square cells of uniform size. Each cell changes its state
+ by means of the transition function, which takes as input the state of
+ the cells belonging to the von Neumann neighborhood. It is formally
+ defined as:</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[SciddicaT = &lt; R, X, Q , P, \sigma &gt;\]</P>
+<P>where:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(R\) is the set of points, with integer coordinates, which defines the
+ 2-dimensional cellular space over which the phenomenon evolves. The
+ generic cell in
+<!--span class=&quot;math inline&quot;-->
+ \(R\) is individuated by means of a couple of integer coordinates
+<!--span class=&quot;math inline&quot;-->
+ \((i, j)\), where
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq i &lt; i_{max}\) and
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq j &lt; j_{max}\). The firt coordinate,
+<!--span class=&quot;math inline&quot;-->
+ \(i\), represents the row, while the second,
+<!--span class=&quot;math inline&quot;-->
+ \(j\), the column. The cell at coodinates
+<!--span class=&quot;math inline&quot;-->
+ \((0,0)\) is located at the top-left corner of the computational grid.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(X = \{(0,0), (-1, 0), (0, -1), (0, 1), (1, 0)\}\) is the von Neumann
+ neighborhood relation (cf. Figure [fig:2Dneighborhood]), a geometrical
+ pattern which identifies the cells influencing the state transition of
+ the central cell. The neighborhood of the generic cell of coordinate
+<!--span class=&quot;math inline&quot;-->
+ \((i, j)\) is given by
+<!--span class=&quot;math display&quot;-->
+ \[N(X, (i, j)) =\]
+<!--span class=&quot;math display&quot;-->
+ \[= \{(i, j)+(0,0), (i, j)+(-1, 0), (i, j)+(0, -1), (i, j)+(0, 1), (i,
+ j)+(1, 0)\} =\]
+<!--span class=&quot;math display&quot;-->
+ \[= \{(i, j), (i-1, j), (i, j-1), (i, j+1), (i+1, j)\}\]</P>
+<P>Here, a subscript operator can be used to index cells belonging to
+ the neighbourhood. Let
+<!--span class=&quot;math inline&quot;-->
+ \(|X|\) be the number of elements in X, and
+<!--span class=&quot;math inline&quot;-->
+ \(n \in \mathbb{N}\),
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq n &lt; |X|\); the notation</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[N(X, (i, j), n)\]</P>
+<P>represents the
+<!--span class=&quot;math inline&quot;-->
+ \(n^{th}\) neighbourhood of the cell
+<!--span class=&quot;math inline&quot;-->
+ \((i,j)\). Thereby,
+<!--span class=&quot;math inline&quot;-->
+ \(N(X, (i, j), 0) = (i, j)\), i.e. the central cell,
+<!--span class=&quot;math inline&quot;-->
+ \(N(X, (i, j), 1) = (i-1, j)\), i.e. the first neighbour, and so on.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q\) is the set of cell states. It is subdivided in the following
+ substates:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q_z\) is the set of values representing the topographic altitude (i.e.
+ elevation);</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q_h\) is the set of values representing the debris thickness;</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q_o^4\) are the sets of values representing the debris outflows from
+ the central cell to the neighboring ones.</P>
+</LI>
+</UL>
+<P>The Cartesian product of the substates defines the overall set of
+ state
+<!--span class=&quot;math inline&quot;-->
+ \(Q\):</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[Q = Q_z \times Q_h \times Q_o^4\] so that the cell state is specified
+ by the following sixtuple:</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[q = (q_z, q_h, q_{o_0}, q_{o_1}, q_{o_2}, q_{o_3})\] In particular,
+<!--span class=&quot;math inline&quot;-->
+ \(q_{o_0}\) represents the outflows from the central cell towards the
+ neighbour 1,
+<!--span class=&quot;math inline&quot;-->
+ \(q_{o_1}\) the outflow towards the neighbour 2, and so on.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(P\) is set of parameters ruling the CA dynamics:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(p_\epsilon\) is the parameter which specifies the thickness of the
+ debris that cannot leave the cell due to the effect of adherence;</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(p_r\) is the relaxation rate parameter, which affects the size of
+ outflows (cf. section above).</P>
+</LI>
+</UL>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma : Q^5 \shortrightarrow Q\) is the deterministic cell transition
+ function. It is composed by two elementary processes, listed below in
+ the same order they are applied:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_1 : (Q_z \times Q_h)^5 \times p_\epsilon \times
+ p_r\shortrightarrow Q_o^4\) determines the outflows from the central
+ cell to the neighboring ones by applying the<EM> minimization algorithm
+ of the differences</EM>. In brief, a preliminary control avoids
+ outflows computation for those cells in which the amount of debris is
+ smaller or equal to
+<!--span class=&quot;math inline&quot;-->
+ \(p_\epsilon\), acting as a simplification of the adherence effect.
+ Thus, by means of the minimization algorithm, outflows
+<!--span class=&quot;math inline&quot;-->
+ \(q_o(0,m) \; (m=0,\ldots,3)\) from the central cell towards its four
+ adjecent cells are evaluated, and the
+<!--span class=&quot;math inline&quot;-->
+ \(Q_o^4\) substates accordingly updated. Note that,
+<!--span class=&quot;math inline&quot;-->
+ \(q_o(0,0)\) represents the aoutflow from the central cell towards the
+ neighbour 1,
+<!--span class=&quot;math inline&quot;-->
+ \(q_o(0,1)\) the aoutflow towards the neighbour 2, and so on. In
+ general,
+<!--span class=&quot;math inline&quot;-->
+ \(q_o(0,m)\) represnets the outflows from the central cell towards the
+<!--span class=&quot;math inline&quot;-->
+ \(n=(m+1)^{th}\) neighbouring cell. Eventually, a relaxation rate
+ factor,
+<!--span class=&quot;math inline&quot;-->
+ \(p_r \in \; ]0,1]\), is considered in order to obtain the local
+ equilibrium condition in more than one CA step. This can significantly
+ improve the realism of model as, in general, more than one step may be
+ needed to displace the proper amount of debris from a cell towards the
+ adjacent ones. In this case, if
+<!--span class=&quot;math inline&quot;-->
+ \(f(0,m) \; (i=0, \ldots, 3)\) represent the outgoing flows towards the
+ 4 adjacent cells, as computed by the minimization algorithm, the
+ resulting outflows are given by
+<!--span class=&quot;math inline&quot;-->
+ \(q_o(0,m)=f(0,m) \cdot p_r \; (i=0, \ldots, 3)\).</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_2: Q_h \times (Q_o^4)^4 \shortrightarrow Q_h\) determines the
+ value of debris thickness inside the cell by considering mass exchange
+ in the cell neighborhood:
+<!--span class=&quot;math inline&quot;-->
+ \(h'(0) = h(0) + \sum_{m=0}^3 (q_o(0,m) - q_o(m,0))\). Here,
+<!--span class=&quot;math inline&quot;-->
+ \(h'(0)\) is the new debris thickness inside the cell, while
+<!--span class=&quot;math inline&quot;-->
+ \(q_o(m,0)\) represents the inflow from the
+<!--span class=&quot;math inline&quot;-->
+ \(n=(m+1)^{th}\) neighbouring cell. No parameters are involved in this
+ elementary process.</P>
+</LI>
+</UL>
+</LI>
+</UL>
+<P>In the following Listing [lst:cal_sciddicaT], an OpenCAL
+ implementation of SciddicaT is shown.</P>
+<P>As for the case of Game of Life, the CA model and the simulation
+ objects are declared as global variables (lines 22 and 35,
+ respectively), and defined later into the main function (lines 147 and
+ 148, respevctively). As you can see, the 2D cellular space is a grid of
+ <CODE>ROWS</CODE> rows times <CODE>COLS</CODE> columns cells,
+ corresponding to
+<!--span class=&quot;math inline&quot;-->
+ \(i_{max}\) and
+<!--span class=&quot;math inline&quot;-->
+ \(j_{max}\) of the formal definition, respectively (cf. lines 10-11),
+ while the von Neumann neighbourhood is adopted. The cellular space is
+ still toroidal, as in Life, and no optimization is considered.
+ Regarding the simulation object, a total of <CODE>STEPS</CODE> steps
+ (i.e. 4000 steps - cf. line 14) are set, and implicit substates
+ updating considered.</P>
+<P>Substates and parameters are grouped into two different C structures
+ (lines 24-28 and 30-33, respectively). Substates are therefore bound to
+ the CA context by means of the <CODE>calAddSubstate2Dr()</CODE>
+ function (lines 155-160), as well as elementary processes are defined
+ as collback functions by means of the <CODE>calAddElementaryProcess2D()</CODE>
+ function (lines 151-152).</P>
+<P>The topographic altitude and debris thickness substates are
+ initialized from files through the <CODE>calLoadSubstate2Dr()</CODE>
+ function (lines 163-164), while the remaining initial state of the CA
+ is set by means of the <CODE>calRunAddInitFunc2D()</CODE> function. It
+ registers the <CODE>sciddicaT_simulation_init()</CODE> callback, whic
+ is executed once before the execution of the simulation loop, in which
+ the elementary processes are applied to the whole set of cells of the
+ cellular space. Such a callback function must return void and take a
+ pointer to a simulation obect as parameter. Differently to an
+ elementary process, that can only access state values of cells
+ belonging to the neighbourhood, this function can perform global
+ operations on the whole cellular space. In the specific case of the
+ SciddicaT model, the <CODE>sciddicaT_simulation_init()</CODE> function
+ (lines 104-130) sets the values of all the outflows from the central
+ cell to its neighbours to zero, by means of the function <CODE>
+calInitSubstate2Dr()</CODE> (lines 110-113). Moreover, it sets the
+ values of the P.r and P.epsilon parameters (lines 116-117) and
+ initializes the debris flow source by simply subtracting the source’s
+ debris thickness to the topographic altitude. For this purpose, a
+ nested double for is executed to check the debris thickness in each
+ cell of the cellular space. Here, the <CODE>sciddicaT-&gt;rows</CODE> and <CODE>
+sciddicaT-&gt;cols</CODE> members of the CA object are used, which
+ represent the cellular spece’s numbers of rows and columns,
+ respectively. Still, the <CODE>calGet2Dr()</CODE> and <CODE>calSet2Dr()</CODE>
+ functions are here employed to read/update substates’ values inside
+ the cells.</P>
+<P>Line 168 defines a<EM> steering</EM> callback by the <CODE>
+calRunAddSteeringFunc2D()</CODE> function. Steering is executed at the
+ end of each computational step (i.e. after all the elementary processe
+ have been applied to each cell of the cellular space), and can perform
+ global operations over the cellular space. In this case, the <CODE>
+sciddicaT_simulation_init()</CODE> callback is registered; it must
+ return void and takes a pointer to a simulation object as function
+ parameter. It simply reset (to zero) the outflows everywere through the
+ <CODE>calInitSubstate2Dr()</CODE> function.</P>
+<P>The function <CODE>calRun2D()</CODE> (line 171) enters the OpenCAL
+ simulation loop, which exectues a totoal of 4000 steps (cf. lines 14
+ and 148). Eventually, the final debris flow path is saved to file by
+ means of the <CODE>calSaveSubstate2Dr()</CODE> function (line 176) and
+ previously allocated memery is released (lines 179-180).</P>
+<P>As regards the elementary processes, the first one,
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_1\), is defined at lines 38-88, while the second,
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_2\), at lines 91-101. In both cases, the <CODE>calGet2Dr()</CODE>
+ <CODE>calGetX2Dr()</CODE> functions are employed to get substes’
+ values for the central cell and its neighbours, respectively. Moreover,
+ the <CODE>calSet2Dr()</CODE> function, updates the central cell’s
+ state.</P>
+<P>Figure [fig:sciddicaT] shows the SciddicaT simulation of the 1992
+ Tessina (Italy) landslide. Both the initial landslide source and the
+ final flow path configruation are shown.</P>
+<DIV class="figure"> <IMG alt="SciddicaT simulation of the 1992 Tessina (Italy) landslide. Topographic altitudes are represented in gray scale. Black represents the lower altitude, while the white color is used for the highest elevation in the study area. Debris thickness is represented with colours ranging from red (for lower values) to yellow (for higher values). (a) Initial configuration. (b) Final debris flow path. Note that the graphic output was generated by using the cal_sciddicaT-glut application, that implements the SciddicaT model and provides a minimal visualization system. You can find it in the examples directoy."
+HEIGHT="321" src="sciddicaT.png" width="453">
+<P class="caption">SciddicaT simulation of the 1992 Tessina (Italy)
+ landslide. Topographic altitudes are represented in gray scale. Black
+ represents the lower altitude, while the white color is used for the
+ highest elevation in the study area. Debris thickness is represented
+ with colours ranging from red (for lower values) to yellow (for higher
+ values). (a) Initial configuration. (b) Final debris flow path. Note
+ that the graphic output was generated by using the <CODE>
+cal_sciddicaT-glut</CODE> application, that implements the SciddicaT
+ model and provides a minimal visualization system. You can find it in
+ the examples directoy.
+<!--span data-label=&quot;fig:sciddicaT&quot;-->
+</P>
+</DIV>
+<P>As regards computational preformace, the simulation shown in Figure
+ [fig:sciddicaT] was executed on a Intel Core i7-4702HQ CPU @ 2.20GHz by
+ exploiting only a single core. The simulation lasted a total of 172
+ seconds for executing a total of 4000 compuational steps.</P>
+<P>Figure [fig:opencal_main_loop] shows the OpenCAL main loop. Before
+ entering the loop, if defined, the init function is executed.
+ Afterwards, while the current step is lower or equal to the final step
+ of computation (or this latter is set to <CODE>CAL_RUN_LOOP</CODE>),
+ elementary processes are executed concurrently<A class="footnoteRef" href="#fn9"
+id="fnref9"><SUP>9</SUP></A>. In this cycle, substates are updated after
+ each elementary process has been applyed, while just before the end of
+ the computational step, if defined, the steering function is executed.
+ At the end of the computational step, a stop condition is checked,
+ which can stop the simulation before the last step is reached. In order
+ to define such a stop condition, the user can use the <CODE>
+stopCondition()</CODE> function, which registers a callback in which the
+ stop condition can be defined.</P>
+<DIV class="figure"> <IMG alt="OpenCAL main loop chart." HEIGHT="748" src="opencal_main_loop.png"
+width="359">
+<P class="caption">OpenCAL main loop chart.
+<!--span data-label=&quot;fig:opencal_main_loop&quot;-->
+</P>
+</DIV><HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="CustomNeighbourhoods.html">Previous</A>
+<A HREF="SciddicaTwithactivecellsoptimization.html">Next</A>
+</BODY>
+</HTML>

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="Kernelprogramming.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="Kernelprogramming.html">Previous</A>
+<HR NOSHADE>
+<H2 id="conways-game-of-life-with-opencal-cl"><A NAME="8_5">Conwayâ€™s
+ Game of Life with OpenCAL-CL</A></H2>
+<P>As already reported in [sec:cal_life], to introduce how to develop a
+ Cellular Automata model with OpenCAL-CL we can start by implementing
+ Conwayâ€™s Game of Life and specifically its host application part. In
+ order to use OpenCAL-CL, some header files are included (lines 3-8)
+ and, in particular, the OpenCAL library and the OpenCAL-CL library. The
+ OpenCAL library inclusion inside the host application is necessary to
+ define the CA object (line 46) and the related substates (line 49). The
+ cal2DIO.h header file (line 4) provides some basic input/output
+ functions for reading/writing substates from/to file. To run the
+ application with OpenCAL-CL, all the necessary objects have to be
+ declared (line 27-31): specifically, the <CODE>CALOpenCL</CODE>
+ structure (line 27), the <CODE>CALCLcontext</CODE>, the <CODE>
+CALCLdevice</CODE>, the <CODE>CALCLprogram</CODE> and the <CODE>
+CALCLToolkit2D</CODE>. To create and initialize these variables we need
+ to call the function <CODE>calclCreateCALOpenCL</CODE> that creates the
+ CALOpenCL structure, the functions <CODE>calclInitializePlatforms</CODE>
+ and <CODE>calclInitializeDevices</CODE> that initialize all the
+ platforms and devices on the available machine and the <CODE>
+calclGetDevice()</CODE> function, which will return the device where
+ elementary process are computed by choosing the <CODE>platformNum</CODE>
+ and <CODE>deviceNum</CODE> integers(line 24-25). Moreover, two
+ important functions are here considered: <CODE>calclcreateContext</CODE>
+ and <CODE>calclLoadProgramLib2D</CODE>. The first returns the context
+ [sec:openclstructure], while the second builds all kernels inside the
+ path specified by <CODE>kernelSrc</CODE>(line 15) including the files
+ specified by <CODE>kernelInc</CODE>(line 16), and returns a program
+ containing all the compiled kernels.</P>
+<P>The definition and declaration of the model (line 46) has the same
+ code that we discussed in [sec:cal_life], and includes all the
+ information to create the model, to create and initialize substates
+ (line 49-52) and to set a initial configuration (line 55-59).</P>
+<P>Although the OpenCAL-CL library uses the same functions of the
+ OpenCAL library to create the model and the substates, the execution of
+ the elementary processes is quite different. As known, our elementary
+ processes are implemented on GPU side through kernels, so we need to
+ manage the transfer of memory between host and device sides and to
+ decide which and when run the kernels. In a classical OpenCL
+ application, itâ€™s not trivial to handle all these issues. For this
+ reason, in OpenCAL-CL we decided to introduce an intermediate object (<CODE>
+CALCLToolkit</CODE>) that hides to the user the memory management and
+ handles the compiled chosen kernels. The user must only initialize the <CODE>
+CALCLToolkit</CODE> structure(line 62) and choose which kernel he/she
+ wants to execute by the function <CODE>calclGetKernelFromProgram</CODE>
+ specifying the program and kernel names. Once kernels are chosen to be
+ executed, the user must only call the function <CODE>
+calclAddElementaryProcessKernel2D</CODE> (line 71) that adds the
+ specific kernel elementary process inside the <CODE>CALCLToolkit</CODE>
+ structure. Finally, to run the simulation the user must call the
+ function <CODE>calclRun2D</CODE> specifying the initial and final step.</P>
+<P>Below is reported the device side code of Conwayâ€™s Game of Life. In
+ this application, we have only one elementary process, defined as a
+ kernel called <CODE>life_transition_function</CODE>.
+<BR> The OpenCAL-CL library will launch exactly a number of threads
+ equal to the entire cellular space, structured like a matrix. In this
+ way, every cell can perform in parallel its own computation. To access
+ to the indexes of the cell the user must call the function <CODE>getRow</CODE>
+ and <CODE>getCol</CODE> line(14-15). Furthermore, the user can use the
+ function <CODE>get_columns</CODE> and <CODE>get_rows</CODE> (line
+ 17-18) to retrieve the dimensions of the cellular space. In the
+ specific case of the Game of Life, we used the <CODE>calGet2Di</CODE>
+ function to get the central cellâ€™s value of the sub- state Q
+ (remember that the central cell is identified by the coordinates (i,
+ j)), the <CODE>calGetX2Di</CODE> function to retrieve the value of the
+ n-th neighbourâ€™s substate Q, and the <CODE>calSet2Di</CODE> function
+ to update the value of the substate Q for the central cell.</P>
+<DIV class="footnotes">
+<HR>
+<OL>
+<LI id="fn1">
+<P>Indeed, even 1D CA can be defined oas a degenerate case of 2D, or
+ even 3D, CA.<A href="#fnref1">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn2">
+<P>The clang C compiler can also be used, taking in mind that it still
+ does not fully support Open-MP natively.<A href="#fnref2">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn3">
+<P>For a list of OpenMP compliant compilers see the following link: <A class="uri"
+href="http://openmp.org/wp/openmp-compilers/">
+http://openmp.org/wp/openmp-compilers/</A>.<A href="#fnref3">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn4">
+<P>OpenCAL-CL was tested on the NVIDIA OpenCL implementation. You can
+ find the NVIDIAâ€™s OpenCL implementation, shipped with the CUDA
+ platform, at the following url: <A class="uri" href="http://docs.nvidia.com/cuda/#installation-guides">
+http://docs.nvidia.com/cuda/#installation-guides</A><A href="#fnref4">
+&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn5">
+<P>For example <CODE>freeglut-devel</CODE> or <CODE>freeglut3-dev</CODE>
+ packages on <CODE>yum/dnf</CODE>- and <CODE>apt</CODE>-based systems,
+ respectively.<A href="#fnref5">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn6">
+<P>XCA are also known as Complex Cellular Automata (CCA), Macroscopic
+ Cellular Automata (MCA), and Multicomponent Cellular Automata (MCA)<A href="#fnref6">
+&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn7">
+<P>Note that, in the case of the Game of Life CA, the central cell does
+ not belong to its own neighborhood.<A href="#fnref7">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn8">
+<P>This characteristic is colled<EM> implicit parallelism</EM> and is
+ obtained in OpenCAL by considering two different working planes for
+ each registered substate, namely<EM> current</EM> and<EM> next</EM>
+ working planes. However, behind the scene, cells are updated
+ sequentially, being OpenCAL a serial software. The<EM> current</EM>
+ working plane is used to read current values for the cells, while the<EM>
+ next</EM> working plane is used to write updated values. The<EM>
+ implicit parallelism</EM> is also used in the parallel versions of
+ OpenCAL, with the difference that more than one cell can be processed
+ and updated concurrently by exploiting mre than one processing unit.<A href="#fnref8">
+&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn9">
+<P>On the serial version of OpenCAL, implicit parallelism is obtained by
+ exploiting the two different computing planes built into OpenCALâ€™s
+ substates. The first one, that we will call<EM> current</EM>, is used
+ to read substatesâ€™s values for the central cell and its neighbours,
+ while the second, that we will call<EM> next</EM>, is used to update
+ the new state for the central cell. When all the cells have been
+ processed and the new state values updated, computing planes are
+ switched, i.e. the<EM> next</EM> plane is assumed as<EM> current</EM>
+ and the<EM> current</EM> as<EM> next</EM>, and the process is
+ reiterated. In this manner, the<EM> current</EM> computing plane is not<EM>
+ corrupted</EM> during a computational step, being new values written to
+ the<EM> next</EM> plane. Note that, even in the case more processing
+ units are used to compute the next CA state and more cells are updated
+ simltaneously, which is the case of OpenCAL-OMP and OpenCAL-CL, the two
+ computing planes are manteined.<A href="#fnref9">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn10">
+<P>Remember that, by default, substates are updated after the
+ application of each alementary process.<A href="#fnref10">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn11">
+<P>This is due to the fact that a substatesâ€™ update is performed after
+ the first elementary process has been applied to all the (active) cells
+ of the cellular space. This behaviour is set by menas of the <CODE>
+CAL_UPDATE_IMPLICIT</CODE> parameter used in the definition of the
+ simulation object at line 132 of Listing [lst:cal_sciddicaT-unsafe].<A href="#fnref11">
+&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn12">
+<P>Actually, only
+<!--span class=&quot;math inline&quot;-->
+ \(Q.h\) can be update by the transition function, since
+<!--span class=&quot;math inline&quot;-->
+ \(Q.z\) is a single-lyered substate.<A href="#fnref12">&acirc;†&copy;</A></P>
+</LI>
+<LI id="fn13">
+<P>Note that active cells are updated first otherwise the subsequent
+ substate update could neglect some cells that have become active during
+ the current step. For instance, inactive cells can receive a flow and
+ become active at he current step of computation. If the set of active
+ cells is not updated before any other substates, those new cells will
+ still be considered inactive during the current step and their value
+ will not be updated, by losing debris flow mass.<A href="#fnref13">&acirc;†&copy;</A>
+</P>
+</LI>
+</OL>
+</DIV><HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="Kernelprogramming.html">Previous</A>
+</BODY>
+</HTML>

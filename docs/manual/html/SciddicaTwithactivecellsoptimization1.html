@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="SciddicaT1.html">
+<LINK REL="Next" HREF="SciddicaTaseXtendedCA1.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaT1.html">Previous</A>
+<A HREF="SciddicaTaseXtendedCA1.html">Next</A>
+<HR NOSHADE>
+<H2 id="sciddicat-with-active-cells-optimization"><A NAME="7_3">
+SciddicaT with active cells optimization</A></H2>
+<P>Here we present an OpenCAL-OMP implemenation of SciddicaT, which
+ takes advantage of the built-in OpenCAL active cells optimization
+ feature. You can find the complete source code in Listing
+ [lst:calomp_Sciddicat-activecells], while the corresponding serial
+ implementation can be found in Section [sec:sciddicaT_active], Listing
+ [lst:cal_Sciddicat-activecells].</P>
+<P>With respect to the Sciddica implementation shown in Listing
+ [lst:calomp_sciddicaT], which is exclusively based on safe OpenCAL-OMP
+ operations, the active cells management as implemented here requires an
+ unsafe operations. Such unsafe operations are performed by means of the
+ <CODE>calAddActiveCellX2D()</CODE> function (line 87), which adds a
+ cell belonging to the neighbourhood to the set
+<!--span class=&quot;math inline&quot;-->
+ \(A\) of active cells. As evident, such an operation is considered
+ unsafe because it can give rise to race condition. In fact, if more
+ threads try to add the same cell to the set
+<!--span class=&quot;math inline&quot;-->
+ \(A\) at the same time, being this a non-atomic operation, threads’
+ operations can interleave and the outcome be wrong. In order to avoid
+ this possible error, OpenCAL-OMP is able to<EM> lock</EM> the memory
+ locations involved in the operations so that each thread can entirely
+ perform its own task without the risk that other threads interfere. In
+ order to do this, it is sufficient to place OpenCAL-OMP in<EM> unsafe</EM>
+ state by calling the <CODE>calSetUnsafe2D()</CODE>, as done at line
+ 163. No other modifications to the serial source code are required.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaT1.html">Previous</A>
+<A HREF="SciddicaTaseXtendedCA1.html">Next</A>
+</BODY>
+</HTML>

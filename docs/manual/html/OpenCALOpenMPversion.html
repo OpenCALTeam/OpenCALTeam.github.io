@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="OpenCALGlobalFunctions.html">
+<LINK REL="Next" HREF="ConwaysGameofLifeinOpenCALOMP.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="OpenCALGlobalFunctions.html">Previous</A>
+<A HREF="ConwaysGameofLifeinOpenCALOMP.html">Next</A>
+<HR NOSHADE>
+<H1 id="ch:opencal-omp"><A NAME="7">OpenCAL OpenMP version</A></H1>
+<P>Nowadays, parallel computing is the most effective solution to
+ overcome temporal limits of sequential computation. With the name
+ OpenCAL-OMP, we identify the OpenMP implementation of the software
+ library, that can run on all cores for your CPU. If you are lucky and
+ have a shared memory multiptocessor system, OpenCAL-OMP can also
+ exploit all the cores of all your CPUs.</P>
+<P>Similarly to the serial version, OpenCAL-OMP allows for some<EM>
+ unsafe operations</EM>, which can significantly speed up your
+ application. However, when you use OpenCAL-OMP in<EM> unsafe mode</EM>
+ you must give the utmost attention to avoid<EM> race condition</EM>
+ issues. For instance, when many threads perform concurrent operations
+ on the same memory locations and such operations are made by more than
+ one atomic machine instruction, it can happen that they can interleave,
+ giving rise to wrong (i.e., non consistent) results. Furthermore, even
+ in the case of atomic operations, the logic order of execution could
+ not be respected. Thus, for instance, a read-write logic sequence of
+ atomic operations can actually become a write-read (wrong) sequence due
+ to the fact that the thread performing the write operation is executed
+ first.</P>
+<P>In the following sections we will introduce OpenCAL-OMP by examples,
+ highlighting source code the differences with respect to the serial
+ implementations shown in Chapter [ch:opencal]. In the first part of the
+ Chapter, we will deal with the OpenCAL’s<EM> safe mode</EM>, while in
+ the last one, we will discuss unsafe operations.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="OpenCALGlobalFunctions.html">Previous</A>
+<A HREF="ConwaysGameofLifeinOpenCALOMP.html">Next</A>
+</BODY>
+</HTML>

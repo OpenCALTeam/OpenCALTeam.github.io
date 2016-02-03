@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="SciddicaTwithexplicitsimulationloop.html">
+<LINK REL="Next" HREF="CombiningOpenCALandOpenCALGL.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaTwithexplicitsimulationloop.html">Previous</A>
+<A HREF="CombiningOpenCALandOpenCALGL.html">Next</A>
+<HR NOSHADE>
+<H2 id="sec:mod2"><A NAME="6_8">A three-dimensional example</A></H2>
+<P>In order to introduce you to development with of three-dimensional CA
+ with OpenCAL, we start this section by implementing a simple 3D model,
+ namely the<EM> mod2</EM> 3D CA. Cells can be in one of two differnt
+ states, 0 or 1, as in Game of Life. The cellular space is a
+ parallelepiped made by cubic cells, while the cell’s neighbourhood is
+ the 3D Moore one, consisting of the central cell and its adjecent
+ cells. The transition function simply evaluates the quantity
+<!--span class=&quot;math inline&quot;-->
+ \(s\) as the number of neighbouring cells which are in the state 1 and
+ sets the new state for the central cell as
+<!--span class=&quot;math inline&quot;-->
+ \(s\%2\) (i.e. the rest of
+<!--span class=&quot;math inline&quot;-->
+ \(s\) divided by 2). This simple example of 3D CA is formally defined
+ as:</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[mod2 = &lt; R, X, Q, \sigma &gt;\]</P>
+<P>where:</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(R\) is the set of points, with integer coordinates, which defines the
+ 3-dimensional cellular space. The generic cell in
+<!--span class=&quot;math inline&quot;-->
+ \(R\) is individuated by means of a triple of integer coordinates
+<!--span class=&quot;math inline&quot;-->
+ \((i, j, k)\), where
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq i &lt; i_{max}\),
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq j &lt; j_{max}\), and
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq k &lt; k_{max}\). The firt coordinate,
+<!--span class=&quot;math inline&quot;-->
+ \(i\), represents the row, the second,
+<!--span class=&quot;math inline&quot;-->
+ \(j\), the column, while the third coordinate represents the slice. The
+ cell at coodinates
+<!--span class=&quot;math inline&quot;-->
+ \((0,0,0)\) is located at the top-left-far corner of the computational
+ grid.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(X = \{(0,0,0), \dots, (-1,1,0), (0,0,-1), \dots, (-1,1,-1), (0,0,1),
+ \dots, (-1,1,1)\}\) is the Moore neighborhood relation, a geometrical
+ pattern which identifies the cells influencing the state transition of
+ the central cell. The neighborhood of the generic cell of coordinate
+<!--span class=&quot;math inline&quot;-->
+ \((i, j)\) is given by
+<!--span class=&quot;math display&quot;-->
+ \[N(X, (i, j, k)) =\]
+<!--span class=&quot;math display&quot;-->
+ \[= \{(i, j, k)+(0,0,0), \dots, (i, j, k)+(-1,1,-1)\} =\]
+<!--span class=&quot;math display&quot;-->
+ \[= \{(i, j, k), \dots, (i-1,j+1,k-1)\}\] Here, a subscript operator
+ can be used to index cells belonging to the neighbourhood. Let
+<!--span class=&quot;math inline&quot;-->
+ \(|X|\) be the number of elements in X, and
+<!--span class=&quot;math inline&quot;-->
+ \(n \in \mathbb{N}\),
+<!--span class=&quot;math inline&quot;-->
+ \(0 \leq n &lt; |X|\); the notation</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[N(X, (i, j, k), n)\]</P>
+<P>represents the
+<!--span class=&quot;math inline&quot;-->
+ \(n^{th}\) neighbourhood of the cell
+<!--span class=&quot;math inline&quot;-->
+ \((i,j,k)\). Thereby,
+<!--span class=&quot;math inline&quot;-->
+ \(N(X, (i, j, k), 0) = (i, j, k)\), i.e. the central cell,
+<!--span class=&quot;math inline&quot;-->
+ \(N(X, (i, j, k), 1) = (i-1, j, k)\), i.e. the first neighbour, and so
+ on.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(Q = \{0, 1\}\) is the set of cell states.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma : Q^{27} \shortrightarrow Q\) is the deterministic cell
+ transition function. It is composed by one elementary process, which
+ implements the previously descripted transition rules.</P>
+</LI>
+</UL>
+<P>As you can imagine, the OpenCAL implementation of the<EM> mod2</EM>
+ 3D CA is very simple, as the Conway’s game of Life is. The complete
+ source code is shown in Listing [lst:cal_mod2CA3D].</P>
+<P>As you can see, even if Listing [lst:cal_life] is very short, it
+ completely defines the<EM> mod2</EM> 3D CA and perform a simulation
+ (actually, only one step in this example). Lines 3-5 include some
+ header files for the 3D version of OpenCAL, while lines 12-14 declare
+ CA, substate and simulation objects. They are therefore defined later
+ in the main function. In particular, line 30 defines the CA as a
+ parallelepiped having <CODE>ROWS</CODE> rows, <CODE>COLS</CODE> columns
+ and <CODE>SLICES</CODE> slices (cf. lines 7-9). Moreover, the 3D Moore
+ neighbourhood is here set as well as cyclic conditions at boundaries.
+ Eventually, no optimizations are considered. Line 31 defines the
+ simulation object by setting just one step of computation and implicit
+ substate’s update. Finally, the only substate,
+<!--span class=&quot;math inline&quot;-->
+ \(Q\), is defined at line 34. Note that, since it was defined by means
+ of the <CODE>calInitSubstate3Db()</CODE> function, each element
+<!--span class=&quot;math inline&quot;-->
+ \(q \in Q\) results to be of the CALbyte type. Line 37 registers the
+ only CA’s elementary process, namely the <CODE>
+mod2_transition_function()</CODE> function, which is then implemnented
+ at lines 17-25. Line 43 initializes the cell’s substated
+<!--span class=&quot;math inline&quot;-->
+ \(Q\) at coordinates (2, 3, 1) to the state 1. The obtained initial
+ configuration is then saved to disk at line 46, and the simulation ran
+ at line 49. The final configuration is therefore saved to disk at line
+ 52 and, eventually, memory previously and implicitly allocated is
+ released at lines 55-56. Note that, diffrently to the previous
+ examples, almost all the OpenCAL functions come in the 3D flower. For
+ instace, this is the case of the <CODE>alGetX3Db()</CODE> and <CODE>
+calSet3Db()</CODE> functions at lines 22 and 24, respectively, which
+ take <CODE>k</CODE> as third cell’s coordinate, identifying the
+ cellular space’s slice.</P>
+<P>Figures [fig:mod2_0000] and [fig:mod2_LAST] show the initial and
+ final configuration of<EM> mod2</EM> 3D CA as implemented in Listing
+ [lst:cal_mod2CA3D], respectively. A graphical representation after 77
+ computational step is shown in Figure [fig:cal_mod2CA3D].</P>
+<DIV class="figure"> <IMG alt="Initial configuration of mod2 3D CA, as implemented in Listing [lst:cal_mod2CA3D]."
+HEIGHT="230" src="mod2_0000.png" width="132">
+<P class="caption">Initial configuration of mod2 3D CA, as implemented
+ in Listing [lst:cal_mod2CA3D].
+<!--span data-label=&quot;fig:mod2_0000&quot;-->
+</P>
+</DIV><DIV class="figure"> <IMG alt="Final configuration of mod2 3D CA (actually, just one step of computation), as implemented in Listing [lst:cal_mod2CA3D]."
+HEIGHT="232" src="mod2_LAST.png" width="132">
+<P class="caption">Final configuration of mod2 3D CA (actually, just one
+ step of computation), as implemented in Listing [lst:cal_mod2CA3D].
+<!--span data-label=&quot;fig:mod2_LAST&quot;-->
+</P>
+</DIV><DIV class="figure"> <IMG alt="Graphical representation of the mod2 3D CA after 77 computational steps, as implemented in Listing [lst:cal_mod2CA3D]. CA dimensions were set to (rows, cols, slices) = (65, 65, 65), while the initial seed located at coordinates (12, 12, 12). Cells in black are in the state 0, cell in white are in the state 1."
+HEIGHT="418" src="mod23DCA-glut.png" width="453">
+<P class="caption">Graphical representation of the mod2 3D CA after 77
+ computational steps, as implemented in Listing [lst:cal_mod2CA3D]. CA
+ dimensions were set to (rows, cols, slices) = (65, 65, 65), while the
+ initial seed located at coordinates (12, 12, 12). Cells in black are in
+ the state 0, cell in white are in the state 1.
+<!--span data-label=&quot;fig:cal_mod2CA3D&quot;-->
+</P>
+</DIV><HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaTwithexplicitsimulationloop.html">Previous</A>
+<A HREF="CombiningOpenCALandOpenCALGL.html">Next</A>
+</BODY>
+</HTML>

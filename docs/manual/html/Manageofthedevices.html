@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="Definitionofthemodel.html">
+<LINK REL="Next" HREF="Allocationofkernels.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="Definitionofthemodel.html">Previous</A>
+<A HREF="Allocationofkernels.html">Next</A>
+<HR NOSHADE>
+<H3 id="manage-of-the-devices"><A NAME="8_3_2">Manage of the devices</A></H3>
+<P>After the model creation, the user must choose the device for the
+ kernel computation. Inside the library, a structure called CALOpenCL
+ allows the user to manage all available platforms and devices. This
+ structure simplifies the access to the devices compared with the native
+ API of OpenCL. The library supplies other functions to know which
+ platforms and devices are available on the system and to have
+ information about these.
+<BR> Below you can see a simple program that explains how the CALOpenCL
+ structure can be used.</P>
+<PRE><CODE>#include &lt;calCL2D .h&gt;
+
+ int main (){
+
+ CALOpenCL * calOpenCL = calclCreateCALOpenCL (); // get all available
+ platforms calclInitializePlatforms ( calOpenCL ); // get all
+ available devices calclInitializeDevices ( calOpenCL );
+
+ // get the first device on the first platform CALCLdevice device =
+ calclGetDevice ( calOpenCL , 0, 0);
+
+ // create a context CALCLcontext context = calclcreateContext (&amp;
+ device , 1);
+
+ return 0; }</CODE></PRE>
+<P>Inside the library, the platforms and the devices are stored in a
+ matrix where rows represent the platforms and columns represent the
+ devices. Thus, to choose which one we can use for the computation, it
+ is necessary to specify the index of platform and the index of the
+ device. For example, at lines 12, we chose the platform number 0 and
+ the device number 0. If we have a system with 3 NVIDIA GPUs and 3 AMD
+ GPUs, the library will have a
+<!--span class=&quot;math inline&quot;-->
+ \(2 \times 3\) size matrix, where 2 are the vendors (i.e., the
+ platforms NVIDIA and AMD) and 3 are the GPUs for each platforms. If we
+ want to run the program using the third AMD GPU, we can specify 1 and 2
+ as indices. If we don’t know how the system identifies the platforms
+ and devices, the library supplies us a function called <CODE>
+calclGetPlatformsAndDeviceFromStandardInput</CODE> that allows us to
+ know the available platforms and devices. First it prints the
+ information on standard output and then we can insert the indexes
+ directly from standard input.
+<BR> After the device is chosen, the user must specify the path where
+ the kernels and relative headers are. Through the function <CODE>
+calclLoadProgramLib(2D/3D)</CODE> the library reads automatically the
+ kernels and compiles them.</P>
+<PRE><CODE>CALCLprogram calclLoadProgramLib(2D|3D) ( CALCLcontext context ,
+CALCLdevice device , char * path_user_kernel , char *
+path_user_include )</CODE></PRE>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="Definitionofthemodel.html">Previous</A>
+<A HREF="Allocationofkernels.html">Next</A>
+</BODY>
+</HTML>

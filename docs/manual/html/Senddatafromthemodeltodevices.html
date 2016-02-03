@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="Allocationofkernels.html">
+<LINK REL="Next" HREF="Startexecutionloop.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="Allocationofkernels.html">Previous</A>
+<A HREF="Startexecutionloop.html">Next</A>
+<HR NOSHADE>
+<H3 id="send-data-from-the-model-to-devices"><A NAME="8_3_4">Send data
+ from the model to devices</A></H3>
+<P>To transfer the data from host side to kernel side, the user must
+ define the structure called <CODE>CALCLToolkit(2D/3D)</CODE> containing
+ all the buffers (data) of the model. By default, the library sends to
+ all the kernels the data associated to the model. The following list
+ shows the data which is sent:</P>
+<UL>
+<LI>
+<P>the dimension of cellular space</P>
+</LI>
+<LI>
+<P>the number of substate for every type (i.e., byte, int, real)</P>
+</LI>
+<LI>
+<P>the substates allocated from the user</P>
+</LI>
+<LI>
+<P>the list of active cells</P>
+</LI>
+<LI>
+<P>the list of active cells flags</P>
+</LI>
+<LI>
+<P>type, dimension and ID of the neighbourhood</P>
+</LI>
+<LI>
+<P>the border condition</P>
+</LI>
+</UL>
+<P>First, the user must create an instance of the structure <CODE>
+CALCLToolkit(2D/3D)</CODE> by calling the function <CODE>
+calclCreateToolkit</CODE> as shown in the following code snippet.</P>
+<PRE><CODE>CALCLToolkit2D * calclCreateToolkit (2D|3D)(struct CALModel (2D|3D)
+*model ,CALCLcontext context ,CALCLprogram program ,CALCLdevice device
+,CALCLOptimization opt)</CODE></PRE>
+<P>The enumerative <CODE>CALCLOptimization</CODE> allows the user to
+ choose if she/he wants to use the library without optimization <CODE>
+(CALCL_NO_OPT)</CODE> or with active cells optimization <CODE>
+(CALCL_OPT_ACTIVE_CELLS)</CODE>. The structure <CODE>CALCLToolkit(2D/3D)</CODE>
+ doesn’t contain only the buffers to transfer data but also the
+ kernels belonging to the execution loop.
+<BR> To add a new kernel to the execution loop, the user has to call the
+ function <CODE>calclAddElementaryProcessKernel(2D/3D)</CODE> that adds
+ the chosen kernel to the list of CA elementary processes; moreover, it
+ sends to the device all the necessary data to execute the kernel.</P>
+<PRE><CODE>void calclAddElementaryProcessKernel2D(CALCLToolkit2D * toolkit2d,
+struct CALModel2D *model, CALCLkernel * elemProcKernel);</CODE></PRE>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="Allocationofkernels.html">Previous</A>
+<A HREF="Startexecutionloop.html">Next</A>
+</BODY>
+</HTML>

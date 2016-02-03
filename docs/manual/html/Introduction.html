@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="Acknowledgements.html">
+<LINK REL="Next" HREF="QuickStart.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="Acknowledgements.html">Previous</A>
+<A HREF="QuickStart.html">Next</A>
+<HR NOSHADE>
+<H1 id="introduction"><A NAME="2">Introduction</A></H1>
+<P>Cellular Automata (CA) represent a parallel computing methodology for
+ modelling complex systems. Well known examples of applications include
+ the simulation of natural phenomena such as lava and debris flows,
+ forest fires, agent based social processes such as pedestrian
+ evacuation and highway traffic problems, besides many others (e.g.,
+ theoretical studies).</P>
+<P>Many Cellular Automata software environments and libraries exist.
+ However, when non-trivial modelling is needed, only non-open source
+ software are generally available. This is particularly true for
+ eXtended Cellular Automata (XCA), adopted for simulating phenomena at a
+ macroscopic point of view, for which only a significant example of non
+ free software exists, namely the CAMELot Cellular Automata Simulation
+ Environment.</P>
+<P>In order to fill this deficiency in the world of free software, the <CODE>
+OpenCAL</CODE> C Library has been developed. Similarly to CAMELot, it
+ allows for a simple and concise definition of both the transition
+ function and the other characteristics of the cellular automaton
+ definition. Moreover, it allows for both sequential and parallel
+ execution, both on CPUs and GPUs (thanks to the adoption of the OpenMP
+ and OpenCL APIs, respectively), hiding most parallel implementation
+ issues to the user.</P>
+<P>The library has been tested on both CPUs anf GPUs by considering
+ different Cellular Automata, including the well known Conway’s Game
+ of Life and the SciddicaT XCA debris flows simulation model. Results
+ have demonstrated the goodness the library both in terms of usability
+ and performance.</P>
+<P>In the present release 1.0 of the library, 2D and 3D cellular
+ automata can be defined<A class="footnoteRef" href="#fn1" id="fnref1"><SUP>
+1</SUP></A>. The library also offers diverse facilities (e.g. it
+ provides many pre-defined cell’s neighborhoods), allows to explicate
+ the simulation main cycle and provides a built in optimization
+ algorithm to speed up your simulation. Moreover, OpenCAL offers you a
+ built in interactive 2D/3D visualization system you can use to
+ graphically represent step by step your simulation based. The
+ visualization system was developed in OpenGL Compatibility Profile,
+ thus is able to run everywhere, also on old workstations.</P>
+<P>The present manual reports the main usage of the <CODE>OpenCAL</CODE>
+ library related to the sequential, OpenMP and OpenCL versions, the
+ library installation procedure, besides diverse examples of
+ application. In particular, Chapter [ch:installation] deals with
+ OpenCAL download and installation, while Chapter [ch:CA] introduce you
+ to the CA and XCA computational paradigms. If you already know theese
+ topics, you can skip this Chapter. Chapter [ch:opencal] is about serial
+ CA and XCA development with OpenCAL, and introduce the different
+ library features by examples. Chapter [ch:opencal-omp] is about the
+ OpenMP-based parallel version of OpenCAL and also introduces the
+ library by examples. Chapter [ch:opencal-cl] briefly introduces you to
+ General Purpose GPU programmin with OpenCL and then presents you the
+ OpenCL-based version of OpenCAL, still by examples. OpenCAL-GL, whihch
+ is the name that identifies the OpenGL visualization system built into
+ OpenCAL, is introduced at the end of each of the above Chapters,
+ together with computational performaces of some of the implemented CA.
+ Eventually, Chapter [ch:utility] ends this user guide by presenting you
+ some usefull library features that weren’t presented previously, like
+ reduction functions.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="Acknowledgements.html">Previous</A>
+<A HREF="QuickStart.html">Next</A>
+</BODY>
+</HTML>

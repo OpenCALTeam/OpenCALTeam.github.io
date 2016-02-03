@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="OpenCALstatementconvention.html">
+<LINK REL="Next" HREF="SciddicaT.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="OpenCALstatementconvention.html">Previous</A>
+<A HREF="SciddicaT.html">Next</A>
+<HR NOSHADE>
+<H2 id="sec:CustomNeiughbourhoods"><A NAME="6_3">Custom Neighbourhoods</A>
+</H2>
+<P>In the Game of Life example, we used the predefined Moore
+ neighbourhood. As you already know, OpenCAL also provides other 2D and
+ 3D predefined neighbourhoods. Furthermore, it allows for the definition
+ of custom neighbourhood patterns (cf. Listings [lst:CALNeighborhood2D]
+ and [lst:CALNeighborhood3D]).</P>
+<PRE> <CODE> struct CALCell2D*  calAddNeighbor2D(
+      struct CALModel2D* ca2D,          // pointer to a 2D CA object
+      int i,                            // row coordinate
+      int j                             // column coordinate
+  );
+
+  struct CALCell3D*  calAddNeighbor3D(
+      struct CALModel3D* ca3D,          // pointer to a 3D CA object
+      int i,                            // row coordinate
+      int j,                            // column coordinate
+      int k                             // slice coordinate
+  );</CODE></PRE>
+<P>In order to define a custom neighbourhood pattern, you need to
+ specify <CODE>CAL_CUSTOM_NEIGHBORHOOD_2D</CODE> (or <CODE>
+CAL_CUSTOM_NEIGHBORHOOD_3D</CODE> in case of a 3D CA) as the third
+ parameter of the <CODE>calCADef2D()</CODE> function (<CODE>calCADef3D()</CODE>
+ for a 3D CA) (cf. Listing [lst:calAddNeighbor2D-3D]). Doing this, you
+ will start with an empty neighbouring pattern. Then call the <CODE>
+calAddNeighbor2D()</CODE> (<CODE>calAddNeighbor3D()</CODE> for 3D CA)
+ function to add a cell to the pattern.</P>
+<PRE> <CODE> // ...
+  int main ()
+  {
+    // define of the life CA and life_simulation simulation objects
+    life = calCADef2D (8, 16, CAL_MOORE_NEIGHBORHOOD_2D, CAL_CUSTOM_NEIGHBORHOOD_2D , CAL_NO_OPT );
+    //...
+    
+    //add neighbors of the Moore neighborhood
+    calAddNeighbor2D(life,   0,   0); // neighbor 0 (central cell)
+    calAddNeighbor2D(life, - 1,   0); // neighbor 1
+    calAddNeighbor2D(life,   0, - 1); // neighbor 2
+    calAddNeighbor2D(life,   0, + 1); // neighbor 3
+    calAddNeighbor2D(life, + 1,   0); // neighbor 4
+    calAddNeighbor2D(life, - 1, - 1); // neighbor 5
+    calAddNeighbor2D(life, + 1, - 1); // neighbor 6
+    calAddNeighbor2D(life, + 1, + 1); // neighbor 7
+    calAddNeighbor2D(life, - 1, + 1); // neighbor 8
+
+    //...
+  }</CODE></PRE>
+<P>Listing [lst:CustomMooreExample] shows an example of how a custom
+ neighbourhood pattern can be built for the Game of Life CA described
+ above. In particular, the Moore neighburhood is built by using a
+ sequence of nine calls to the <CODE>calAddNeighbor2D()</CODE> function.
+ The first time the function is called, it adds the relative coordinates
+ (0,0) to the neighbouring pattern. This first set of coordinates
+ recerives the subscript identifier 0 and therefore can be used later to
+ refer the central cell. For instance, when you call <CODE>
+calSet2Di(life,Q,i,j,0);</CODE> (see e.g. line 23, Listing
+ [lst:cal_life]), the relative coordinates of the neighbor 0 (specified
+ as last parameters), i.e. (0,0), are added to the coordinates of the
+ cells the elementary process is applying to, i.e. (i,j) (cf. second and
+ third to last parameters), by obtaining the cell (i,j) itself, which
+ correspond to the central cell by definition. The subsequent calls to <CODE>
+calAddNeighbor2D()</CODE> add further couples of coordinates to the
+ neighbouring pattern, by progressively assigning an integer subscript
+ identifier to each of them.</P>
+<P>Eventually, note that you are free to start from a predefined
+ neighbourhood. For instance, let still consider the above Game of Life
+ example; you can enrich the Moore neighbourhood pattern by simply
+ specifying the value <CODE>CAL_MOORE_NEIGHBORHOOD_2D</CODE> as
+ parameter for the <CODE>calCADef2D</CODE> function) and then add
+ further neighbours by calling <CODE>calAddNeighbor2D()</CODE> as meny
+ times the as the number of cells you want to add is.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="OpenCALstatementconvention.html">Previous</A>
+<A HREF="SciddicaT.html">Next</A>
+</BODY>
+</HTML>

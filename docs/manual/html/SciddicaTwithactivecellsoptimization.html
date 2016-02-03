@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="SciddicaT.html">
+<LINK REL="Next" HREF="SciddicaTaseXtendedCA.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaT.html">Previous</A>
+<A HREF="SciddicaTaseXtendedCA.html">Next</A>
+<HR NOSHADE>
+
+<H2 id="sec:sciddicaT_active"><A NAME="6_5">SciddicaT with active cells
+ optimization</A></H2>
+<P>Here we present a computationally improved version of SciddicaT,
+ which takes advantage of the built-in OpenCAL active cells
+ optimization. As stated above, this optimization is able to restrict
+ computation to a subset of cells which are actually involved in
+ computation, by neglecting those cells for which is sure they will not
+ change state to the next step (stationary cells).</P>
+<P>In the case of SciddicaT, only cells containing debris and their
+ neighbours can change state to the next step, as they can be interested
+ in mass variation due to outflows and inflows. At the beginning of the
+ simulation, we can simply initialize the set of active cells to those
+ cells containing debris (i.e. those cells forming the initial landslide
+ source). Moreover, we can add to this set new cells or remove some ones
+ from it. Specifically, if an outflow is computed from an active cell
+ towards a neighbouring non-active cell, this latter can be added to the
+ set of active cells and considered for state change by the remaining
+ elementary processes in the current step of computation<A class="footnoteRef"
+href="#fn10" id="fnref10"><SUP>10</SUP></A> (if any), or by the next
+ computational step. Similarly, if a given active cell looses a
+ sufficient amount of debris, it can be eliminated from the set of
+ active cells. In the case of SciddicaT, this appens when its thickness
+ becomes lower than or equal to a given threshold (i.e.
+<!--span class=&quot;math inline&quot;-->
+ \(p_\epsilon\)).</P>
+<P>In order to account for these processes, we have to slightly revise
+ the SciddicaT definition. In particular we have to add the set of
+ active cells, A. The optimized SciddicaT model is now defined as</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[SciddicaT = &lt; R, A, X, Q , P, \sigma &gt;\] where
+<!--span class=&quot;math inline&quot;-->
+ \(A \subseteq R\) is the set of active cells, while the other
+ components are defned as before. The transition function is now defined
+ as:</P>
+<P>
+<!--span class=&quot;math display&quot;-->
+\[\sigma : A \times Q^5 \shortrightarrow Q \times A\] denoting that it
+ is applied to only the cells in
+<!--span class=&quot;math inline&quot;-->
+ \(A\) and that it can add/remove active cells. More in detail, the
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_1\) elementary process has to be modified, as it can activate
+ new cell. Moreover, a new elementary process,
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_3\), has to be added in order to remove cells that cannot
+ produce outflows during the next computational step due to the fact
+ that their debris thickness is negligible. The new sequence of
+ elementary processes is listed below, in the same order they are
+ applied.</P>
+<UL>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_1 : A \times (Q_z \times Q_h)^5 \times p_\epsilon \times p_r
+ \shortrightarrow Q_o^4 \times A\) determines the outflows from the
+ central cell to the neighboring ones, as before. In addition, each time
+ an outflow is computed, the neighbour receiving the flow is added to
+ the set of active cells.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_2: A \times Q_h \times (Q_o^4)^4 \shortrightarrow Q_h\)
+ determines the value of debris thickness inside the cell by considering
+ mass exchange in the cell neighborhood. This elementary process does
+ not change with respect to the original version of SciddicaT.</P>
+</LI>
+<LI>
+<P>
+<!--span class=&quot;math inline&quot;-->
+\(\sigma_3: A \times Q_h \times p_\epsilon \shortrightarrow A\) removes
+ a cell from
+<!--span class=&quot;math inline&quot;-->
+ \(A\) if its debris thickness is lower than or equal to the
+<!--span class=&quot;math inline&quot;-->
+ \(p_\epsilon\) threshold.</P>
+</LI>
+</UL>
+<P>In order to implement the SciddicaT debris flows model in OpenCAL by
+ exploiting the active cells optimization, we have to chage the
+ definition of the CA objet, by also adding the third
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_3\) elementary process. Moreover, the
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_1\) elementary process has to be changed. A complete
+ implementation of the sactive cells optimized version of SciddicaT is
+ shown in Listing [lst:cal_Sciddicat-activecells] for the sake of
+ completeness, even if only the differences with respect to the original
+ implementation are commented.</P>
+<P>As you can easily see, few modifications to the original source code
+ are needed to add the active cells optimization to SciddicaT. In
+ particular, the active cells optimization is enabled by means of the <CODE>
+CAL_OPT_ACTIVE_CELLS</CODE> parameter at line 159, while the third
+ elementary process added at line 165. As regards the elementary
+ processe
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_1\), it is the same of the one of the basic SciddicaT version,
+ with the exception that when an outflow is generated, the cell
+ receiving the flow is added to the set A of the active cells (line 88).
+ Moreover, an active cell is eliminated by the set A by means of the
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_3\) elementary process in the case its debris thickness
+ becomes lower than or equal to the
+<!--span class=&quot;math inline&quot;-->
+ \(p_\epsilon\) threshold parameter (lines 107-108).</P>
+<P>Regarding the computational preformace, the same simulation shown in
+ Figure [fig:sciddicaT] was executed using the new SciddicaT
+ implementation adopting the active cells implementation. Still, only a
+ single core of the Intel Core i7-4702HQ CPU was used, as we did before.
+ The simulation lasted a total of 22 seconds, versus 172 seconds
+ obtained for the basic (non-optimized) version, which is about 8 times
+ faster. This can be condidered a very good result you can easily obtain
+ when your simulation involves only a limited subset of the
+ computational domain.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaT.html">Previous</A>
+<A HREF="SciddicaTaseXtendedCA.html">Next</A>
+</BODY>
+</HTML>

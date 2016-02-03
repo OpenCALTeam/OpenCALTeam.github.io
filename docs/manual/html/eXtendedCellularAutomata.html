@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="SomeApplicationsofCellularAutomata.html">
+<LINK REL="Next" HREF="FormalDefinitionofeXtendedCellularAutomata.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="SomeApplicationsofCellularAutomata.html">Previous</A>
+<A HREF="FormalDefinitionofeXtendedCellularAutomata.html">Next</A>
+<HR NOSHADE>
+<H2 id="extended-cellular-automata"><A NAME="5_4">eXtended Cellular
+ Automata</A></H2>
+<P>As regards the modeling of natural complex phenomena, Prof. Gino
+ ‘Miracle Crisci’ and co-workers from University of Calabria (Italy)
+ proposed a method based on an eXtended notion of CA (XCA), firstly
+ applied to the simulation of basaltic lava flows in the 80’s<A class="footnoteRef"
+href="#fn6" id="fnref6"><SUP>6</SUP></A>. It was shown that the approach
+ behind XCA can greatly make more straightforward the modeling of some
+ complex systems.</P>
+<P>Informally, XCA, compared to classical CA, are different because of
+ the following reasons:</P>
+<UL>
+<LI>
+<P>The cell’s state is decomposed in<EM> substates</EM>, each of them
+ representing the set of admissible values of a given characteristic
+ assumed to be relevant for the modeled system and its evolution (e.g.,
+ lava temperature, lava thickness, etc, in the case of ca lava flow
+ model). The set of states for the cell is simply obtained as the
+ Cartesian product of the considered substates.</P>
+</LI>
+<LI>
+<P>As the cell’s state can be decomposed in substates, also the
+ transition function can be split into<EM> elementary processes</EM>,
+ each of them representing a particular aspect that rules the dynamic of
+ the considered phenomenon. In turn,<EM> elementary processes</EM> can
+ be split into<EM> local interactions</EM>, which refer to rules that
+ deal with interactions among substates of the cell with neighbor ones
+ (e.g., mass exchange with neighbours) and<EM> internal transformations</EM>
+, defined as the changes in the values of the substates due only to
+ interactions among substates inside the cell (e.g. the solidi¢cation
+ of the lava inside the cell due to the substate ‘lava
+ temperature’).</P>
+</LI>
+<LI>
+<P>A set of<EM> parameters</EM>, commonly used to characterize the
+ dynamic behaviors of the considered phenomenon, can be defined.</P>
+</LI>
+<LI>
+<P>Global operations can also be allowed (e.g. to model external
+ influences that can not easily be described in terms of local
+ interactions, or to perform reductions over the whole, or a subset of,
+ the cellular space). Such operations go under the name of<EM> steering</EM>
+.</P>
+</LI>
+</UL>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="SomeApplicationsofCellularAutomata.html">Previous</A>
+<A HREF="FormalDefinitionofeXtendedCellularAutomata.html">Next</A>
+</BODY>
+</HTML>
