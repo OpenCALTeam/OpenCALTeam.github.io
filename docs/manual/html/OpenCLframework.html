@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="OpenCALOpenCLversion.html">
+<LINK REL="Next" HREF="ThestructureofOpenCALCL.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="OpenCALOpenCLversion.html">Previous</A>
+<A HREF="ThestructureofOpenCALCL.html">Next</A>
+<HR NOSHADE>
+<H2 id="sec:openclstructure"><A NAME="8_1">OpenCL framework</A></H2>
+<P>OpenCL enables parallel programming that assigns computational tasks
+ to multiple processing elements to be performed at the same time. These
+ tasks are called<EM> kernels</EM>. A kernel is a special function that
+ can be executed to different OpenCL-compliant devices. In the CA
+ modeling context, each elementary process of the CA transition function
+ is devised in the OpenCAL library as a kernel. The kernels are sent to
+ the device(s) by the host application. The host application defines a
+ structure called<EM> context</EM>, needed to manage data exchange and
+ computation on the compliant devices.</P>
+<P>In particular, host application links kernels into one or more
+ programs. In the host application, the user can select the kernel’s
+ functions to insert inside a container called<EM> program</EM>. The
+ program connects the kernel with argument data and dispatches it to a
+ structure called<EM> command queue</EM>. The command queue is a
+ structure that allows the host to decide what the devices have to do
+ and, when a kernel is enqueued, the device will execute the relative
+ function.</P>
+<DIV class="figure"> <IMG alt="General structure of a OpenCL program" HEIGHT="304"
+src="kernelDistribution.png" width="453">
+<P class="caption">General structure of a OpenCL program
+<!--span data-label=&quot;fig:GeneralStructure&quot;-->
+</P>
+</DIV>
+<P>As we can see from the picture above, the context contains all the
+ devices, all the command queues and all the kernels. More in detail,
+ for every device a command queue is associated and every command queue
+ has inside all the kernel functions that the device has to execute.</P>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="OpenCALOpenCLversion.html">Previous</A>
+<A HREF="ThestructureofOpenCALCL.html">Next</A>
+</BODY>
+</HTML>

@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=utf-8">
+<LINK REL="Start" HREF="index.html">
+<LINK REL="Contents" HREF="toc.html">
+<LINK REL="Prev" HREF="SciddicaTaseXtendedCA.html">
+<LINK REL="Next" HREF="Athreedimensionalexample.html">
+<style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-pandoc.css" type="text/css" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</HEAD>
+<BODY>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaTaseXtendedCA.html">Previous</A>
+<A HREF="Athreedimensionalexample.html">Next</A>
+<HR NOSHADE>
+<H2 id="sciddicat-with-explicit-simulation-loop"><A NAME="6_7">SciddicaT
+ with explicit simulation loop</A></H2>
+<P>Even if results obtained so far can be considered more than
+ satisfying, it is further possibile to improve computational
+ performance of SciddicaT by avoiding unnecessary substates updating. In
+ fact, in some cases, elementary processes don’t affect one or more
+ model’s substates and therefore their updating becomes only a waste
+ of time.</P>
+<P>As we stated above, when we use the implicit <CODE>calRun2D()</CODE>
+ simulation loop, an update of all the defined substates is executed at
+ the end of each elementary process. However, this behaviour can be
+ modified by making the OpenCAL simulation loop explicit.</P>
+<P>In the specific case of the SciddicaT XCA model, the second
+ elementary process,
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_2\), just remove cells that became inactive from the set
+<!--span class=&quot;math inline&quot;-->
+ \(A\) of active cells and doesn’t affect the mode’s substates<A class="footnoteRef"
+href="#fn12" id="fnref12"><SUP>12</SUP></A>. As a consequence, no
+ substates updating is needed after the application of
+<!--span class=&quot;math inline&quot;-->
+ \(\sigma_2\). Being substates udating a time comsuming operation, this
+ can further speed up your simulation.</P>
+<P>A new OpenCAL implementation of SciddicaT is presented in Listing
+ [lst:cal_sciddicaT-explicit]. It is based on an explicit simulation
+ loop and also defines a stopping criterion for the simulation
+ termination. The complete implementation is shown for the sake of
+ completeness.</P>
+<P>As you can see, the <CODE>calRunAddGlobalTransitionFunc2D()</CODE>
+ function is called to register a custom transition function callback
+ (line 177). In the specific case of SciddicaT, the <CODE>
+sciddicaTransitionFunction()</CODE> callback (lines 132-143) is used to
+ make the elementary processes application and the substates update
+ explicit. Here, the elementary processes are applied in the same order
+ they are defined by means of the <CODE>calAddElementaryProcess2D()</CODE>
+ function (which is the default behaviour of OpenCAL), even if you are
+ free to re-order the call sequence within the explicit transition
+ function callback. In particular, the <CODE>sciddicaT_flows()</CODE>
+ elementary process is applied to each (active) cell into the
+ computational domain by means of the <CODE>
+calApplyElementaryProcess2D()</CODE> function. Then, the set
+<!--span class=&quot;math inline&quot;-->
+ \(A\) of the active cells and the
+<!--span class=&quot;math inline&quot;-->
+ \(Q_h\) substate are updated by means of the <CODE>
+calUpdateActiveCells2D()</CODE> and <CODE>calUpdateSubstate2Dr()</CODE>,
+ respectively<A class="footnoteRef" href="#fn13" id="fnref13"><SUP>13</SUP>
+</A>. Eventually, the <CODE>sciddicaT_remove_inactive_cells()</CODE>
+ elementary process is applied, which only removes cells that became
+ incative during the current computational step, and the set
+<!--span class=&quot;math inline&quot;-->
+ \(A\) is accordingly updated.</P>
+<P>As regard the computational performance, this further optimized
+ version lasted 12 seconds to complete the 4000 steps required by the
+ simulation on a single core of the same Intel Core i7 processor used
+ before. The obtained sped up is here quite small (less than the 10%)
+ with respect to the previous implementation of SciddicaT. However,
+ SciddicaT is a very simplyfied model and higer speed up can certainly
+ be obtained for more complex CA made up by more elementary processes,
+ theese latter involving only a small set of model’s substates. Table
+ [tab:speedup] resumes computational performace of all the above
+ illustraed SciddicaT implementations.</P>
+<TABLE><CAPTION> Computational performace of the four different
+ implementations of the SciddicaT debris flows model.
+<!--span data-label=&quot;tab:speedup&quot;-->
+</CAPTION><THEAD></THEAD>
+<TR class="header"><TH align="left">CA model</TH><TH align="center">
+Elapsed time [s]</TH><TH align="center">Speedup</TH></TR>
+<TBODY></TBODY>
+<TR class="odd"><TD align="left">SciddicaT</TD><TD align="center">240</TD><TD
+align="center">1</TD></TR>
+<TR class="even"><TD align="left">SciddicaT with active cells</TD><TD align="center">
+23</TD><TD align="center">10.43</TD></TR>
+<TR class="odd"><TD align="left">SciddicaT XCA (eXtended CA)</TD><TD align="center">
+13</TD><TD align="center">18.46</TD></TR>
+<TR class="even"><TD align="left">SciddicaT XCA explicit update</TD><TD align="center">
+12</TD><TD align="center">20</TD></TR>
+</TABLE>
+<HR NOSHADE>
+<A HREF="toc.html">Contents</A>
+<A HREF="SciddicaTaseXtendedCA.html">Previous</A>
+<A HREF="Athreedimensionalexample.html">Next</A>
+</BODY>
+</HTML>
